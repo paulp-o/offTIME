@@ -4,12 +4,13 @@
 
 # 이 코드는 타 모듈 없이 완전히 스스로 동작해야 함.
 
+import configparser
+import datetime
+import os
+import time
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QDateTime, Qt
-
-import configparser, os
-
-import datetime, time
 
 
 ########## UI 부분 자동생성 코드 시작 ##########
@@ -84,7 +85,6 @@ def open_ui(setTime):
     setTime = setTime + datetime.timedelta(seconds=int(config['ACTIVITY']['notifytime_sec']))
     QsetT = QDateTime.fromString(str(setTime), "yyyy-MM-dd hh:mm:ss")
 
-
     app = QtWidgets.QApplication(sys.argv)
     Dialog = QtWidgets.QDialog()
     ui = Ui_Dialog()
@@ -98,22 +98,15 @@ def open_ui(setTime):
     def updateProgressBar():
         QnowT = QtCore.QDateTime.currentDateTime()
         Qdiff_msec = QnowT.msecsTo(QsetT)
-        # print(QsetT, QnowT, Qdiff_msec)
         Qdiff_sec = Qdiff_msec / 1000
-        # timer_init = QtCore.QTimer()
-        # timer_init.setInterval(5)
-        # timer_init.start()
         ui.leftTimeProgressBar.setFormat("{0}초 후 자동으로 종료됨. ".format(round(Qdiff_sec)))
         if Qdiff_sec > int(config['ACTIVITY']['notifytime_sec']):
             pass
         else:
             ui.leftTimeProgressBar.setProperty("maximum", 10000)
             value = int(Qdiff_msec) / ((int(config['ACTIVITY']['notifytime_sec']) * 1000)) * 10000
-            #print(value)
             ui.leftTimeProgressBar.setProperty("value", value)
-        #print(Qdiff_sec)
         if 0 <= Qdiff_sec <= 1:
-            print("<종료커맨드 발동>")
             try:
                 if config['ACTIVITY']['killswitch'] == '1':
                     print('<Killswitch Acitvated>')
@@ -155,12 +148,6 @@ def shutdown_start(setTime):
     open_ui(setTime)
 
 
-##### 디버그 #####
-# setTime = datetime.datetime.now().replace(hour=int(config['TIME']['hour']), minute=int(config['TIME']['minute']), second=0, microsecond=0)
-# open_ui(setTime)
-#################
-
-
 def main():
     config.read("offTimeConfig.ini")
     notify_time_sec = int(config['ACTIVITY']['notifytime_sec'])
@@ -171,7 +158,8 @@ def main():
                                                       microsecond=0)
     setTime = setTimeOriginal - datetime.timedelta(seconds=notify_time_sec)
 
-    if setTime <= now.replace(microsecond=0) + datetime.timedelta(seconds=1) <= setTime + datetime.timedelta(seconds=notify_time_sec):
+    if setTime <= now.replace(microsecond=0) + datetime.timedelta(seconds=1) <= setTime + datetime.timedelta(
+            seconds=notify_time_sec):
         # 예정대로 동작
         if config['ACTIVITY']['Switch'] == '1':
             shutdown_start(setTime)

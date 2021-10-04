@@ -1,29 +1,29 @@
-from datetime import datetime
-import os, sys, configparser, subprocess
-from collections import OrderedDict
+import random
+import sys
 
-from PyQt5.QtWidgets import *
 from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import *
 
-import resources_rc, random
 from modules import *
 
 password = "1234"
 
-
 # UI 파일 불러오기
-
-
-mainAppUI = uic.loadUiType("mainapp.ui")[0]
-advancedSettingsUI = uic.loadUiType("advanced_settings.ui")[0]
-helpUI = uic.loadUiType("help.ui")[0]
-infoUI = uic.loadUiType("info.ui")[0]
-openSourceInfoUI = uic.loadUiType("openSourceLicense.ui")[0]
+mainAppUI = uic.loadUiType("ui/mainapp.ui")[0]
+advancedSettingsUI = uic.loadUiType("ui/advanced_settings.ui")[0]
+helpUI = uic.loadUiType("ui/help.ui")[0]
+infoUI = uic.loadUiType("ui/info.ui")[0]
+openSourceInfoUI = uic.loadUiType("ui/openSourceLicense.ui")[0]
 
 
 class MainApp(QMainWindow, mainAppUI):
     def __init__(self):
         super().__init__()
+        self.open_source_info_dialog = OpenSourceInfo()
+        self.info_dialog = Info()
+        self.help_dialog = Help()
+        self.advanced_settings_dialog = AdvancedSettings()
+        self.hour, self.minute, self.switch, self.enablecancel, self.second, self.notifytime = read_file()
         self.setupUi(self)
         # UI 초기화
         self.setStyleSheet('QMainWindow { background-color: rgb(182,182,182) }')
@@ -37,22 +37,19 @@ class MainApp(QMainWindow, mainAppUI):
             self.statusInfo.setText("현재 예약종료 비활성화됨. ")
         self.help.setShortcut('Ctrl+?')
 
-
         self.timer = QtCore.QTimer(self)
         self.timer.setInterval(500)
         self.timer.timeout.connect(self.updateTimes)
         self.timer.start()
 
-
         self.setTime = self.setTimeEdit.time()
 
-
-        ## 기능부 연결
+        # 기능부 연결
         self.closeButton.clicked.connect(self.closeButtonClicked)  # 닫기 버튼
         self.updateTimeLCD()  # LCD 업데이트
         self.onoffCheckBox.stateChanged.connect(self.switchCheckBoxChanged)  # 활성화/비활성화 체크박스
         self.timeApplyButton.clicked.connect(self.timeApplyButtonClicked)  # 시간 적용 버튼
-        #self.setTimeEdit.timeChanged.connect(self.timeApplyButtonClicked)
+        # self.setTimeEdit.timeChanged.connect(self.timeApplyButtonClicked)
         # <메뉴>
         self.advanced_settings.triggered.connect(self.advancedSettingsMenuClicked)  # 고급 설정 열기
         self.help.triggered.connect(self.helpClicked)  # 도움말 열기
@@ -60,8 +57,9 @@ class MainApp(QMainWindow, mainAppUI):
         self.infoOpenSource.triggered.connect(self.openSourceInfoClicked)  # 오픈소스 정보 열기
         self.logoButton.clicked.connect(self.logoButtonClicked)
 
-    # 기능부 구현
+        # 기능부 구현
         self.switch = 1
+
     def logoButtonClicked(self):
         if self.switch:
             self.setStyleSheet('QMainWindow {}')
@@ -75,25 +73,24 @@ class MainApp(QMainWindow, mainAppUI):
         self.close()
 
     def updateTimeLCD(self):
-        self.hour, self.minute, self.switch, self.enablecancel, self.second, self.notifytime = read_file()
         self.setTimeLCD.display("{0}:{1}:{2}".format(self.hour, self.minute, self.second))
 
     def switchCheckBoxChanged(self, state):
         if state == QtCore.Qt.Checked:
-            #print("switch checkbox on")
+            # print("switch checkbox on")
             edit_config('switch', '1')
             self.statusInfo.setText("현재 예약종료 활성화됨. ")
         else:
-            #print("switch checkbox off")
+            # print("switch checkbox off")
             edit_config('switch', '0')
             self.statusInfo.setText("현재 예약종료 비활성화됨. ")
         restart_bg()
 
     def timeApplyButtonClicked(self):
         self.setTime = self.setTimeEdit.time()
-        hour = self.setTime.hour() if (self.setTime.hour()>=10) else ('0'+str(self.setTime.hour()))
-        minute = self.setTime.minute() if (self.setTime.minute()>=10) else ('0'+str(self.setTime.minute()))
-        second = self.setTime.second() if (self.setTime.second()>=10) else ('0'+str(self.setTime.second()))
+        hour = self.setTime.hour() if (self.setTime.hour() >= 10) else ('0' + str(self.setTime.hour()))
+        minute = self.setTime.minute() if (self.setTime.minute() >= 10) else ('0' + str(self.setTime.minute()))
+        second = self.setTime.second() if (self.setTime.second() >= 10) else ('0' + str(self.setTime.second()))
         print("changed hour: %s, minute: %s, second: %s" % (hour, minute, second))
         edit_config('hour', hour)
         edit_config('minute', minute)
@@ -102,9 +99,9 @@ class MainApp(QMainWindow, mainAppUI):
         restart_bg()
 
     def closeEvent(self, QCloseEvent):
-        #self.destroy()  # 다른 거에서 닫을 때 렉 이슈가 존재하여 일단 메인윈도우를 비활성화시킴.
-        #if self.advanced_settings_dialog.isVisible() == True: self.advanced_settings_dialog.close()
-        #if self.help_dialog.isVisible() == True: self.help_dialog.close()
+        # self.destroy()  # 다른 거에서 닫을 때 렉 이슈가 존재하여 일단 메인윈도우를 비활성화시킴.
+        # if self.advanced_settings_dialog.isVisible() == True: self.advanced_settings_dialog.close()
+        # if self.help_dialog.isVisible() == True: self.help_dialog.close()
         exit()
         pass
 
@@ -112,29 +109,25 @@ class MainApp(QMainWindow, mainAppUI):
         currentT = QtCore.QTime.currentTime()
         currentT_msec = QtCore.QTime.msecsSinceStartOfDay(currentT)
         if self.setTime <= currentT:  # 예약시간이 현재시간보다 이전일때 다음날 날짜로 계산함
-            leftT_msec = (24 * 60 * 60 * 1000) - (currentT_msec - QtCore.QTime.msecsSinceStartOfDay(self.setTime)) + 1000
+            leftT_msec = (24 * 60 * 60 * 1000) - (
+                        currentT_msec - QtCore.QTime.msecsSinceStartOfDay(self.setTime)) + 1000
         else:  # 예약시간이 오늘기준일때
             leftT_msec = QtCore.QTime.msecsSinceStartOfDay(self.setTime) - currentT_msec + 1000
         leftT = QtCore.QTime.fromMSecsSinceStartOfDay(leftT_msec)
         self.currentTime.setText(currentT.toString("hh:mm:ss"))
         self.leftTime.setText(str(leftT.toString("hh:mm:ss")))
 
-
     def advancedSettingsMenuClicked(self):
-        self.advanced_settings_dialog = AdvancedSettings()
         self.advanced_settings_dialog.show()
         pass
 
     def helpClicked(self):
-        self.help_dialog = Help()
         self.help_dialog.show()
 
     def infoClicked(self):
-        self.info_dialog = Info()
         self.info_dialog.show()
 
     def openSourceInfoClicked(self):
-        self.open_source_info_dialog = OpenSourceInfo()
         self.open_source_info_dialog.show()
 
 
@@ -147,12 +140,10 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
 
         self.eastereggstack = 1
 
-
         # UI 초기화
         self.advancedGroupBox.setEnabled(False)
         self.pwTextBox.setFocus()
         self.pwTextBox.installEventFilter(self)
-
 
         # 기능부 연결
         self.loginButton.clicked.connect(self.loginButtonClicked)
@@ -166,15 +157,12 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
         self.enableCancelRadioButton.clicked.connect(self.enableCancelRadioButtonClicked)
         self.notifyTimeApplyButton.clicked.connect(self.notifyTimeApplyButtonClicked)
 
-
     # eventFilter을 override하여 키입력을 확인
     def eventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.KeyPress and obj is self.pwTextBox:
             if event.key() == QtCore.Qt.Key_Return and self.pwTextBox.hasFocus():
                 self.loginButtonClicked()
         return super().eventFilter(obj, event)
-
-
 
     def loginButtonClicked(self):
         _hour, _minute, _switch, enablecancel, _second, notifytime = read_file()
@@ -198,19 +186,17 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
             self.advancedGroupBox.setEnabled(False)
             self.statusDisplay.setText("로그인 실패! (%d) :l" % self.eastereggstack)
             self.pwTextBox.setText("")
-            self.eastereggstack+=1
-            if 100<=self.eastereggstack<=499:
+            self.eastereggstack += 1
+            if 100 <= self.eastereggstack <= 499:
                 self.statusDisplay.setStyleSheet('QLabel { color: rgb(%d,%d,%d) }' % (
                     random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
                 self.statusDisplay.setText("( ͡° ͜ʖ ͡°) [ %d ] щ（ﾟДﾟщ）" % self.eastereggstack)
             if self.eastereggstack >= 500:
-
                 self.statusDisplay.setStyleSheet('QLabel { background-color: rgb(%d,%d,%d); color: rgb(%d,%d,%d); }' % (
-                                                 random.randint(0, 255), random.randint(0, 255), random.randint(0, 255),
-                                                 random.randint(0, 255), random.randint(0, 255),
-                                                 random.randint(0, 255)))
+                    random.randint(0, 255), random.randint(0, 255), random.randint(0, 255),
+                    random.randint(0, 255), random.randint(0, 255),
+                    random.randint(0, 255)))
                 self.statusDisplay.setText("ㅋㅋㅋ x %d" % self.eastereggstack)
-
 
     def bgProgramStartButtonClicked(self):
         bgProgramStart()
@@ -246,8 +232,8 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
             print(':::', appdata)
             path = os.path.join(appdata, r'offtime-bg-b2ZmdGltZS1iZw.exe.lnk')
             dirname = os.path.dirname(__file__)
-            target = os.path.join(dirname, r'\offtime-bg-b2ZmdGltZS1iZw.exe')
-            icon = os.path.join(dirname, r'\offtime-bg-b2ZmdGltZS1iZw.exe')
+            target = os.path.join(dirname, r'offtime-bg-b2ZmdGltZS1iZw.exe')
+            icon = os.path.join(dirname, r'offtime-bg-b2ZmdGltZS1iZw.exe')
             shell = win32com.client.Dispatch("WScript.Shell")
             shortcut = shell.CreateShortCut(path)
             shortcut.Targetpath = target
@@ -272,7 +258,6 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
         self.statusDisplay.setText("예약 취소 버튼을 비활성화했습니다. 이제 종료 예정 안내창에서 종료를 취소할 수 없습니다.")
         restart_bg()
 
-
     def enableCancelRadioButtonClicked(self):
         edit_config('enablecancel', '1')
         self.statusDisplay.setText("예약 취소 버튼을 활성화했습니다. 종료 예정 안내창에서 종료 취소가 가능합니다.")
@@ -282,10 +267,6 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
         edit_config('notifytime', str(self.notifyTimeSpinBox.value()))
         self.statusDisplay.setText("예약 시간 {0}초 전에 종료 예정 안내창을 띄우도록 설정되었습니다.".format(self.notifyTimeSpinBox.value()))
         restart_bg()
-
-
-
-
 
 
 ## 도움말 창 ##
@@ -299,6 +280,7 @@ class Help(QDialog, helpUI):
 
     def closeButtonClicked(self):
         self.close()
+
 
 ## 프로그램 정보 창 ##
 class Info(QDialog, infoUI):
@@ -323,14 +305,12 @@ class Info(QDialog, infoUI):
             self.logo.show()
         if self.logoClickTimes > 10:
             self.titleLabel.setText("Secret Found! %d times of useless clicks" % self.logoClickTimes)
-            if random.randint(1,100) <= 30:
+            if random.randint(1, 100) <= 30:
                 self.setStyleSheet('QDialog { background-color: rgb(%d,%d,%d) }'
                                    % (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
             else:
                 self.setStyleSheet('QDialog { background-color: rgb(182,182,182) }')
             pass
-
-
 
 
 ## 오픈소스 정보 창 ##
@@ -357,5 +337,3 @@ class open:
         MainWindow = MainApp()
         MainWindow.show()
         app.exec_()
-
-#open_advanced_settings()
