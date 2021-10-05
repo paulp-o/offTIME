@@ -49,12 +49,15 @@ class MainApp(QMainWindow, mainAppUI):
         self.updateTimeLCD()  # LCD 업데이트
         self.onoffCheckBox.stateChanged.connect(self.switchCheckBoxChanged)  # 활성화/비활성화 체크박스
         self.timeApplyButton.clicked.connect(self.timeApplyButtonClicked)  # 시간 적용 버튼
+        self.createShortcutButton.clicked.connect(self.createShortcutClicked)
         # self.setTimeEdit.timeChanged.connect(self.timeApplyButtonClicked)
         # <메뉴>
         self.advanced_settings.triggered.connect(self.advancedSettingsMenuClicked)  # 고급 설정 열기
         self.help.triggered.connect(self.helpClicked)  # 도움말 열기
         self.infoOfProgram.triggered.connect(self.infoClicked)  # 프로그램 정보 열기
         self.infoOpenSource.triggered.connect(self.openSourceInfoClicked)  # 오픈소스 정보 열기
+        self.check_update.triggered.connect(self.updateMenuClicked)  # 업데이트 확인 버튼
+        # 로고 클릭
         self.logoButton.clicked.connect(self.logoButtonClicked)
 
         # 기능부 구현
@@ -109,8 +112,8 @@ class MainApp(QMainWindow, mainAppUI):
         currentT = QtCore.QTime.currentTime()
         currentT_msec = QtCore.QTime.msecsSinceStartOfDay(currentT)
         if self.setTime <= currentT:  # 예약시간이 현재시간보다 이전일때 다음날 날짜로 계산함
-            leftT_msec = (24 * 60 * 60 * 1000) - (
-                        currentT_msec - QtCore.QTime.msecsSinceStartOfDay(self.setTime)) + 1000
+            leftT_msec = (24 * 60 * 60 * 1000) - \
+                         (currentT_msec - QtCore.QTime.msecsSinceStartOfDay(self.setTime)) + 1000
         else:  # 예약시간이 오늘기준일때
             leftT_msec = QtCore.QTime.msecsSinceStartOfDay(self.setTime) - currentT_msec + 1000
         leftT = QtCore.QTime.fromMSecsSinceStartOfDay(leftT_msec)
@@ -130,6 +133,30 @@ class MainApp(QMainWindow, mainAppUI):
     def openSourceInfoClicked(self):
         self.open_source_info_dialog.show()
 
+    def updateMenuClicked(self):
+        import updater
+        self.updater_dialog = updater.Updater()
+        self.updater_dialog.show()
+        self.updater_dialog.updateStart()
+
+    def createShortcutClicked(self):
+        try:
+            import win32com.client
+            appdata = os.path.join(os.getenv('USERPROFILE'), r"Desktop")
+            print(':::', appdata)
+            path = os.path.join(appdata, r'오프타임 제어판.lnk')
+            dirname = os.path.dirname(__file__)
+            target = os.path.join(dirname, r'offTIME.exe')
+            icon = os.path.join(dirname, r'offTIME.exe')
+            shell = win32com.client.Dispatch("WScript.Shell")
+            shortcut = shell.CreateShortCut(path)
+            shortcut.Targetpath = target
+            shortcut.IconLocation = icon
+            shortcut.save()
+        except:
+            self.createShortcutButton.setText("실패(오류)!")
+        else:
+            self.createShortcutButton.setText("완료!")
 
 ## 고급 설정 ##
 
@@ -326,6 +353,7 @@ class OpenSourceInfo(QDialog, openSourceInfoUI):
         self.close()
 
 
+
 class open:
     def __init__(self):
         self.mainapp()
@@ -337,3 +365,4 @@ class open:
         MainWindow = MainApp()
         MainWindow.show()
         app.exec_()
+

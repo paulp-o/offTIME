@@ -68,53 +68,32 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>20</y>
+     <y>10</y>
      <width>281</width>
-     <height>31</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>HY헤드라인M</family>
+     <family>TwoCon</family>
+     <pointsize>11</pointsize>
      <weight>50</weight>
      <italic>false</italic>
      <bold>false</bold>
      <underline>false</underline>
      <strikeout>false</strikeout>
-     <stylestrategy>NoAntialias</stylestrategy>
+     <stylestrategy>PreferAntialias</stylestrategy>
      <kerning>true</kerning>
     </font>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;offTIME&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:26pt; font-weight:600;&quot;&gt;offTIME&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>70</y>
-     <width>321</width>
-     <height>221</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>offTIME (오프타임) 
-
-
-
-
-
-ⓒ 2021 Byeong Hyun Park 
-
-
-이 프로그램은 GNU General Public License version 3.0 (GPLv3) 라이센스로 배포되었습니다. 
-
-개인, 기업, 관공서에서 자유롭게 사용할 수 있습니다.
-</string>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -124,14 +103,14 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>110</y>
+     <y>120</y>
      <width>321</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
     <string>ver 2110a 
-최초버전 개발기간: 20210906-20211003</string>
+최초버전 개발기간: 20210906-20211005</string>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -188,14 +167,72 @@
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>80</y>
+     <width>211</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;a href=https://github.com/flickout/offTIME&gt;https://github.com/flickout/offTIME&lt;/a&gt;</string>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+   <property name="textInteractionFlags">
+    <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse</set>
+   </property>
+   <property name="buddy">
+    <cstring></cstring>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>170</y>
+     <width>321</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>이 프로그램은 GNU General Public License version 3.0 (GPLv3) 라이센스로 배포되었습니다. 
+
+개인, 기업, 관공서에서 자유롭게 사용할 수 있습니다.</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>270</y>
+     <width>191</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>ⓒ 2021 Byeong Hyun Park</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
   <zorder>logoSmall</zorder>
   <zorder>closeButton</zorder>
   <zorder>line</zorder>
   <zorder>titleLabel</zorder>
-  <zorder>label_2</zorder>
   <zorder>label_3</zorder>
   <zorder>logo</zorder>
   <zorder>logoButton</zorder>
+  <zorder>label</zorder>
+  <zorder>label_5</zorder>
+  <zorder>label_6</zorder>
  </widget>
  <resources>
   <include location="resources.qrc"/>

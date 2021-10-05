@@ -165,7 +165,7 @@
    <string>오프타임 - 관공서용 예약종료 프로그램</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset>
     <normaloff>:/icon/icon/iconSmall.png</normaloff>:/icon/icon/iconSmall.png</iconset>
   </property>
   <property name="styleSheet">
@@ -399,7 +399,7 @@ color: rgb(0, 0, 56);</string>
       <rect>
        <x>90</x>
        <y>40</y>
-       <width>118</width>
+       <width>101</width>
        <height>20</height>
       </rect>
      </property>
@@ -462,9 +462,9 @@ color: rgb(0, 0, 56);</string>
     <widget class="QPushButton" name="timeApplyButton">
      <property name="geometry">
       <rect>
-       <x>220</x>
+       <x>194</x>
        <y>40</y>
-       <width>75</width>
+       <width>51</width>
        <height>20</height>
       </rect>
      </property>
@@ -505,6 +505,70 @@ color: rgb(0, 0, 56);</string>
      </property>
      <property name="text">
       <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="currentTimeLabel">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>20</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>현재시간: </string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="leftTimeLabel">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>40</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>남은시간:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="leftTime">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>40</y>
+       <width>51</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>12:34:56</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="currentTime">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>20</y>
+       <width>51</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>12:34:56</string>
      </property>
     </widget>
    </widget>
@@ -589,70 +653,6 @@ color: rgb(0, 0, 56);</string>
      </property>
     </widget>
    </widget>
-   <widget class="QLabel" name="currentTime">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>70</y>
-      <width>51</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <property name="text">
-     <string>12:34:56</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="leftTime">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>90</y>
-      <width>51</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <property name="text">
-     <string>12:34:56</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="leftTimeLabel">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>90</y>
-      <width>61</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <property name="text">
-     <string>남은시간:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="currentTimeLabel">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>70</y>
-      <width>61</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <property name="text">
-     <string>현재시간: </string>
-    </property>
-   </widget>
    <widget class="QLabel" name="titleDevLabel">
     <property name="geometry">
      <rect>
@@ -682,7 +682,7 @@ color: rgb(0, 0, 56);</string>
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="resources.qrc">:/icon/icon/iconLong.png</pixmap>
+     <pixmap>:/icon/icon/iconLong.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -739,20 +739,30 @@ color: rgb(0, 0, 56);</string>
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QPushButton" name="createShortcutButton">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>115</y>
+      <width>151</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>바탕화면에 바로가기 추가</string>
+    </property>
+   </widget>
    <zorder>closeButton</zorder>
    <zorder>statusInfo</zorder>
    <zorder>settings_groupBox</zorder>
    <zorder>NoFXInfoLabel</zorder>
-   <zorder>currentTime</zorder>
-   <zorder>leftTime</zorder>
-   <zorder>leftTimeLabel</zorder>
-   <zorder>currentTimeLabel</zorder>
    <zorder>titleDevLabel</zorder>
    <zorder>setTime_groupBox</zorder>
    <zorder>label</zorder>
    <zorder>verLabel</zorder>
    <zorder>verLabel_2</zorder>
    <zorder>logoButton</zorder>
+   <zorder>createShortcutButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="enabled">
