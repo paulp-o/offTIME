@@ -38,7 +38,7 @@
 ```Shell
 pyinstaller --onefile --noconsole --clean --name offtime-bg-b2ZmdGltZS1iZw.exe --distpath ./ui --icon=./icon/iconSmall.ico bg.py
 ```
-##### or
+or
 ```Shell
 pyinstaller -F -w --clean -n offtime-bg-b2ZmdGltZS1iZw.exe --distpath ./ui -i=./icon/iconSmall.ico bg.py
 ```
