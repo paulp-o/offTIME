@@ -25,7 +25,7 @@
 - 이 프로그램을 재배포할 시 원작자를 표시해야 합니다.
 
 #
-#### ℹ️ 제 3자 소프트웨어 및 오픈 소스 라이센스
+#### ℹ️ 제 3자 소프트웨어 정보 및 오픈 소스 라이센스
 - [Qt 5](https://code.qt.io/cgit/) - [LGPLv3](https://www.gnu.org/licenses/lgpl-3.0.en.html)
 - [PyQt5](https://www.riverbankcomputing.com/software/pyqt/) - [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html)
 - [BeautifulSoup](https://github.com/waylan/beautifulsoup) - [MIT License](https://www.mit.edu/~amini/LICENSE.md)
