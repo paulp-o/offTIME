@@ -1,14 +1,22 @@
 import random
 import sys
+import win32com.client
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import *
 
+# user-defined libraries
 from modules import *
 
 password = "1234"
 
-# UI 파일 불러오기
+try:
+    os.chdir(sys._MEIPASS)
+    print(sys._MEIPASS)
+except:
+    os.chdir(os.getcwd())
+
+# load UI files
 mainAppUI = uic.loadUiType("ui/mainapp.ui")[0]
 advancedSettingsUI = uic.loadUiType("ui/advanced_settings.ui")[0]
 helpUI = uic.loadUiType("ui/help.ui")[0]
@@ -25,7 +33,7 @@ class MainApp(QMainWindow, mainAppUI):
         self.advanced_settings_dialog = AdvancedSettings()
         self.hour, self.minute, self.switch, self.enablecancel, self.second, self.notifytime = read_file()
         self.setupUi(self)
-        # UI 초기화
+        # Initialize UI
         self.setStyleSheet('QMainWindow { background-color: rgb(182,182,182) }')
         self.setTimeLCD.setDigitCount(8)
         hour, minute, switch, _enablecancel, second, _notifytime = read_file()
@@ -44,23 +52,23 @@ class MainApp(QMainWindow, mainAppUI):
 
         self.setTime = self.setTimeEdit.time()
 
-        # 기능부 연결
-        self.closeButton.clicked.connect(self.closeButtonClicked)  # 닫기 버튼
-        self.updateTimeLCD()  # LCD 업데이트
-        self.onoffCheckBox.stateChanged.connect(self.switchCheckBoxChanged)  # 활성화/비활성화 체크박스
-        self.timeApplyButton.clicked.connect(self.timeApplyButtonClicked)  # 시간 적용 버튼
-        self.createShortcutButton.clicked.connect(self.createShortcutClicked)
+        # Connect functions with UI elements
+        self.closeButton.clicked.connect(self.closeButtonClicked)  # close button
+        self.updateTimeLCD()  # update lcd with digital time
+        self.onoffCheckBox.stateChanged.connect(self.switchCheckBoxChanged)  # checkbox: switch
+        self.timeApplyButton.clicked.connect(self.timeApplyButtonClicked)  # time apply button
+        self.createShortcutButton.clicked.connect(self.createShortcutClicked)  # create shortcut button
         # self.setTimeEdit.timeChanged.connect(self.timeApplyButtonClicked)
-        # <메뉴>
-        self.advanced_settings.triggered.connect(self.advancedSettingsMenuClicked)  # 고급 설정 열기
-        self.help.triggered.connect(self.helpClicked)  # 도움말 열기
-        self.infoOfProgram.triggered.connect(self.infoClicked)  # 프로그램 정보 열기
-        self.infoOpenSource.triggered.connect(self.openSourceInfoClicked)  # 오픈소스 정보 열기
-        self.check_update.triggered.connect(self.updateMenuClicked)  # 업데이트 확인 버튼
-        # 로고 클릭
+        # <menus>
+        self.advanced_settings.triggered.connect(self.advancedSettingsMenuClicked)  # menu: open advanced settings panel
+        self.help.triggered.connect(self.helpClicked)  # menu: open help dialog
+        self.infoOfProgram.triggered.connect(self.infoClicked)  # menu: open program information dialog
+        self.infoOpenSource.triggered.connect(self.openSourceInfoClicked)  # menu: open OSS info dialog
+        self.check_update.triggered.connect(self.updateMenuClicked)  # menu: open updater dialog
+        # when logo clicked (for easteregg)
         self.logoButton.clicked.connect(self.logoButtonClicked)
 
-        # 기능부 구현
+        # this is for switching between gray/white background color mode.
         self.switch = 1
 
     def logoButtonClicked(self):
@@ -77,6 +85,7 @@ class MainApp(QMainWindow, mainAppUI):
 
     def updateTimeLCD(self):
         self.setTimeLCD.display("{0}:{1}:{2}".format(self.hour, self.minute, self.second))
+        print(self.hour, self.minute, self.second)
 
     def switchCheckBoxChanged(self, state):
         if state == QtCore.Qt.Checked:
@@ -91,30 +100,29 @@ class MainApp(QMainWindow, mainAppUI):
 
     def timeApplyButtonClicked(self):
         self.setTime = self.setTimeEdit.time()
-        hour = self.setTime.hour() if (self.setTime.hour() >= 10) else ('0' + str(self.setTime.hour()))
-        minute = self.setTime.minute() if (self.setTime.minute() >= 10) else ('0' + str(self.setTime.minute()))
-        second = self.setTime.second() if (self.setTime.second() >= 10) else ('0' + str(self.setTime.second()))
-        print("changed hour: %s, minute: %s, second: %s" % (hour, minute, second))
-        edit_config('hour', hour)
-        edit_config('minute', minute)
-        edit_config('second', second)
+        self.hour = self.setTime.hour() if (self.setTime.hour() >= 10) else ('0' + str(self.setTime.hour()))
+        self.minute = self.setTime.minute() if (self.setTime.minute() >= 10) else ('0' + str(self.setTime.minute()))
+        self.second = self.setTime.second() if (self.setTime.second() >= 10) else ('0' + str(self.setTime.second()))
+        print("changed hour: %s, minute: %s, second: %s" % (self.hour, self.minute, self.second))
+        edit_config('hour', self.hour)
+        edit_config('minute', self.minute)
+        edit_config('second', self.second)
         self.updateTimeLCD()
         restart_bg()
 
     def closeEvent(self, QCloseEvent):
-        # self.destroy()  # 다른 거에서 닫을 때 렉 이슈가 존재하여 일단 메인윈도우를 비활성화시킴.
-        # if self.advanced_settings_dialog.isVisible() == True: self.advanced_settings_dialog.close()
-        # if self.help_dialog.isVisible() == True: self.help_dialog.close()
+        self.hide()
+        super().hide()
+        self.exit()
         exit()
-        pass
 
     def updateTimes(self):
         currentT = QtCore.QTime.currentTime()
         currentT_msec = QtCore.QTime.msecsSinceStartOfDay(currentT)
-        if self.setTime <= currentT:  # 예약시간이 현재시간보다 이전일때 다음날 날짜로 계산함
+        if self.setTime <= currentT:  # if set time is passed already, consider it to be tomorrow
             leftT_msec = (24 * 60 * 60 * 1000) - \
                          (currentT_msec - QtCore.QTime.msecsSinceStartOfDay(self.setTime)) + 1000
-        else:  # 예약시간이 오늘기준일때
+        else:  # when set time is today
             leftT_msec = QtCore.QTime.msecsSinceStartOfDay(self.setTime) - currentT_msec + 1000
         leftT = QtCore.QTime.fromMSecsSinceStartOfDay(leftT_msec)
         self.currentTime.setText(currentT.toString("hh:mm:ss"))
@@ -158,7 +166,8 @@ class MainApp(QMainWindow, mainAppUI):
         else:
             self.createShortcutButton.setText("완료!")
 
-## 고급 설정 ##
+
+# advanced settings dialog #
 
 class AdvancedSettings(QDialog, advancedSettingsUI):
     def __init__(self):
@@ -167,12 +176,12 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
 
         self.eastereggstack = 1
 
-        # UI 초기화
+        # Initializing UI
         self.advancedGroupBox.setEnabled(False)
         self.pwTextBox.setFocus()
         self.pwTextBox.installEventFilter(self)
 
-        # 기능부 연결
+        # connect functions with UI elements
         self.loginButton.clicked.connect(self.loginButtonClicked)
         self.bgProgramStartButton.clicked.connect(self.bgProgramStartButtonClicked)
         self.bgProgramCloseButton.clicked.connect(self.bgProgramCloseButtonClicked)
@@ -184,7 +193,7 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
         self.enableCancelRadioButton.clicked.connect(self.enableCancelRadioButtonClicked)
         self.notifyTimeApplyButton.clicked.connect(self.notifyTimeApplyButtonClicked)
 
-    # eventFilter을 override하여 키입력을 확인
+    # override eventFilter function in QDialog.py for key event feature
     def eventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.KeyPress and obj is self.pwTextBox:
             if event.key() == QtCore.Qt.Key_Return and self.pwTextBox.hasFocus():
@@ -198,15 +207,15 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
             self.statusDisplay.setText("로그인 성공! :)")
             self.loginButton.setFocus()
 
-            # 숨겼던 UI 요소들을 초기화함
-            # 1. 중도취소 버튼 사용 여부
+            # initialize disabled UI elements
+            # 1. init enablecancel settings
             if enablecancel == '0':
                 self.disableCancelRadioButton.setChecked(1)
             elif enablecancel == '1':
                 self.enableCancelRadioButton.setChecked(1)
             else:
                 raise ValueError('enablecancel value key error')
-            # 2. 종료예약 창 n초 미리 뜨게 하기
+            # 2. init notify_time settings
             self.notifyTimeSpinBox.setValue(int(notifytime))
 
         else:
@@ -239,8 +248,9 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
             createConfigFile()
         except FileExistsError:
             self.statusDisplay.setText("설정파일이 이미 존재합니다! 설정파일을 리셋하기 위해서는 설정파일을 삭제하고 다시 생성하세요.")
-        except:
+        except Exception as e:
             self.statusDisplay.setText("오류가 발생했습니다! 실행 권한 또는 백신 프로그램을 체크해주세요.")
+            print(e)
         else:
             self.statusDisplay.setText("설정파일을 생성하였습니다.")
 
@@ -254,20 +264,20 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
 
     def startupEnableButtonClicked(self):
         try:
-            import win32com.client
             appdata = os.path.join(os.getenv('APPDATA'), r"Microsoft\Windows\Start Menu\Programs\Startup")
             print(':::', appdata)
             path = os.path.join(appdata, r'offtime-bg-b2ZmdGltZS1iZw.exe.lnk')
             dirname = os.path.dirname(__file__)
-            target = os.path.join(dirname, r'offtime-bg-b2ZmdGltZS1iZw.exe')
-            icon = os.path.join(dirname, r'offtime-bg-b2ZmdGltZS1iZw.exe')
+            target = os.path.join(dirname, r'ui\offtime-bg-b2ZmdGltZS1iZw.exe')
+            icon = os.path.join(dirname, r'ui\offtime-bg-b2ZmdGltZS1iZw.exe')
             shell = win32com.client.Dispatch("WScript.Shell")
             shortcut = shell.CreateShortCut(path)
             shortcut.Targetpath = target
             shortcut.IconLocation = icon
             shortcut.save()
-        except:
+        except Exception as e:
             self.statusDisplay.setText("오류가 발생했습니다! 실행 권한 또는 백신 프로그램을 체크해주세요. ")
+            print(e)
         else:
             self.statusDisplay.setText("시작프로그램에 등록되었습니다. ")
 
@@ -296,27 +306,27 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
         restart_bg()
 
 
-## 도움말 창 ##
+# Help Dialog #
 class Help(QDialog, helpUI):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
 
-        # 기능부 연결
+        # connect functions with UI elements
         self.closeButton.clicked.connect(self.closeButtonClicked)
 
     def closeButtonClicked(self):
         self.close()
 
 
-## 프로그램 정보 창 ##
+# Program Info Dialog #
 class Info(QDialog, infoUI):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.logoClickTimes = 0
 
-        # 기능부 연결
+        # connect functions with UI elements
         self.closeButton.clicked.connect(self.closeButtonClicked)
         self.logoButton.clicked.connect(self.logoButtonClicked)
 
@@ -340,18 +350,17 @@ class Info(QDialog, infoUI):
             pass
 
 
-## 오픈소스 정보 창 ##
+# OSS Info Dialog#
 class OpenSourceInfo(QDialog, openSourceInfoUI):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
 
-        # 기능부 연결
+        # connect functions with UI elements
         self.closeButton.clicked.connect(self.closeButtonClicked)
 
     def closeButtonClicked(self):
         self.close()
-
 
 
 class open:
@@ -360,9 +369,8 @@ class open:
 
     @staticmethod
     def mainapp():
-        # 구동부
+        # run ! ! !
         app = QApplication(sys.argv)
         MainWindow = MainApp()
         MainWindow.show()
         app.exec_()
-

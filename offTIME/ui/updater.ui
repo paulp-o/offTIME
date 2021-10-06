@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
+    <width>300</width>
     <height>55</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>240</width>
+    <width>300</width>
     <height>55</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>240</width>
+    <width>300</width>
     <height>55</height>
    </size>
   </property>
@@ -34,7 +34,7 @@
     <rect>
      <x>5</x>
      <y>10</y>
-     <width>228</width>
+     <width>281</width>
      <height>41</height>
     </rect>
    </property>
@@ -47,13 +47,19 @@
    <property name="wordWrap">
     <bool>true</bool>
    </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+   <property name="textInteractionFlags">
+    <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse</set>
+   </property>
   </widget>
   <widget class="QProgressBar" name="progressBar">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>30</y>
-     <width>221</width>
+     <width>281</width>
      <height>16</height>
     </rect>
    </property>
