@@ -32,20 +32,21 @@
 
 #
 #### :cd: 빌드 방법
-소스 코드를 이용하여 프로그램을 빌드할 때 이러한 과정을 거칩니다.
-- 먼저 _bg.py_ 의 디렉터리에서 pyInstaller을 통해 다음 명령어로 빌드합니다.
+소스 코드를 이용하여 프로그램을 빌드할 때 다음 과정을 거치게 됩니다.
+- 먼저 최상위 폴더에서 pyInstaller로 _/ui/bg.py_ 를 빌드합니다.
 
-```Shell
-pyinstaller --onefile --noconsole --clean --name offtime-bg-b2ZmdGltZS1iZw.exe --distpath ./ui --icon=./icon/iconSmall.ico bg.py
+```PowerShell
+pyinstaller --onefile --noconsole --clean --name offtime-bg-b2ZmdGltZS1iZw.exe --distpath ./ui --icon=./icon/iconSmall.ico ./ui/bg.py
 ```
-or
-```Shell
-pyinstaller -F -w --clean -n offtime-bg-b2ZmdGltZS1iZw.exe --distpath ./ui -i=./icon/iconSmall.ico bg.py
+또는 (간략화)
+```PowerShell
+pyinstaller -F -w --clean -n offtime-bg-b2ZmdGltZS1iZw.exe --distpath ./ui -i=./icon/iconSmall.ico ./ui/bg.py
 ```
 
-- _offtime-bg-b2ZmdGltZS1iZw.exe_ 이 _ui_ 폴더 안에 빌드되었을 때, _main.py_ 의 디렉터리에서 pyInstaller을 통해 빌드하면 됩니다.
+- _offtime-bg-b2ZmdGltZS1iZw.exe_ 이 _ui_ 폴더 안에 빌드됩니다. 이 파일은 _main.py_ 를 빌드할 때 포함되므로 먼저 빌드되어야 합니다.
+- 같은 디렉터리에서 pyInstaller을 통해 main.py를 빌드하면 됩니다.
 
-> ##### PyInstaller 빌드 참고 사항 (_.spec_):
+> ##### PyInstaller 빌드 참고 사항 ( _.spec_ ):
 > #####
 > in **Analysis**:
 > #####
@@ -58,9 +59,12 @@ pyinstaller -F -w --clean -n offtime-bg-b2ZmdGltZS1iZw.exe --distpath ./ui -i=./
 > icon='./icon/iconSmall.ico'
 > #####
 
+#
 
+#### :wrench: 추가 정보
 
-
+- _/ui/offTimeConfig.ini_ 파일의 _[ACTIVITY]_ 항목에 _killswitch=1_ 값을 추가하면 PC 종료를 수행하지 않습니다.
+- 이 프로그램은 이스터에그가 있습니다. :facepalm:
 
 
 
