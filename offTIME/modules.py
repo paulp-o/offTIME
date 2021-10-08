@@ -76,7 +76,8 @@ def deleteConfigFile():
 def open_bg():
     if os.path.isfile('ui/offtime-bg-b2ZmdGltZS1iZw.exe'):
         print('exe exist')
-        subprocess.Popen('ui/offtime-bg-b2ZmdGltZS1iZw.exe')
+        dirname = os.path.dirname(__file__)
+        subprocess.Popen(os.path.join(dirname, r'ui\offtime-bg-b2ZmdGltZS1iZw.exe'))
     else:
         print('no background program to open !!!!!!')
 

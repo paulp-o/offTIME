@@ -177,6 +177,7 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
         self.eastereggstack = 1
 
         # Initializing UI
+        self.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         self.advancedGroupBox.setEnabled(False)
         self.pwTextBox.setFocus()
         self.pwTextBox.installEventFilter(self)
@@ -311,6 +312,7 @@ class Help(QDialog, helpUI):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
 
         # connect functions with UI elements
         self.closeButton.clicked.connect(self.closeButtonClicked)
@@ -324,6 +326,7 @@ class Info(QDialog, infoUI):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         self.logoClickTimes = 0
 
         # connect functions with UI elements
@@ -355,6 +358,8 @@ class OpenSourceInfo(QDialog, openSourceInfoUI):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setWindowFlags(
+            QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
 
         # connect functions with UI elements
         self.closeButton.clicked.connect(self.closeButtonClicked)
