@@ -16,7 +16,7 @@ def check_file():
 
 
 def read_file():
-    config.read("offTimeConfig.ini")
+    config.read("offTimeConfig.ini", encoding="utf-8")
     # print(config.sections())
     setHour = config['TIME']['hour']
     setMinute = config['TIME']['minute']
