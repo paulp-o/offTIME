@@ -1,3 +1,5 @@
+version = '2110e'
+
 import requests
 import random
 from os.path import dirname, abspath
@@ -6,7 +8,6 @@ from PyQt5 import uic, QtTest
 from PyQt5.QtWidgets import *
 
 path = dirname(dirname(abspath(__file__)))
-version = '2110c'
 url = 'https://raw.githubusercontent.com/flickout/offTIME/master/version.txt'
 updaterUI = uic.loadUiType("ui/updater.ui")[0]
 

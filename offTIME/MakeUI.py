@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import *
 
 # user-defined libraries
 from modules import *
+import updater
 
 password = "1234"
 
@@ -34,6 +35,7 @@ class MainApp(QMainWindow, mainAppUI):
         self.hour, self.minute, self.switch, self.enablecancel, self.second, self.notifytime = read_file()
         self.setupUi(self)
         # Initialize UI
+        self.verLabel_2.setText(updater.version)
         self.setStyleSheet('QMainWindow { background-color: rgb(182,182,182) }')
         self.setTimeLCD.setDigitCount(8)
         hour, minute, switch, _enablecancel, second, _notifytime = read_file()
@@ -113,8 +115,7 @@ class MainApp(QMainWindow, mainAppUI):
     def closeEvent(self, QCloseEvent):
         self.hide()
         super().hide()
-        self.exit()
-        exit()
+        sys.exit()
 
     def updateTimes(self):
         currentT = QtCore.QTime.currentTime()
@@ -245,7 +246,7 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
 
     def configFileCreateButtonClicked(self):
         try:
-            if os.path.isfile('offTimeConfig.ini'): raise FileExistsError
+            if os.path.isfile('C:\offTimeConfig.ini'): raise FileExistsError
             createConfigFile()
         except FileExistsError:
             self.statusDisplay.setText("설정파일이 이미 존재합니다! 설정파일을 리셋하기 위해서는 설정파일을 삭제하고 다시 생성하세요.")
@@ -267,10 +268,10 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
         try:
             appdata = os.path.join(os.getenv('APPDATA'), r"Microsoft\Windows\Start Menu\Programs\Startup")
             print(':::', appdata)
-            path = os.path.join(appdata, r'offtime-bg-b2ZmdGltZS1iZw.exe.lnk')
+            path = os.path.join(appdata, r'offtimeSvc.exe.lnk')
             dirname = os.path.dirname(__file__)
-            target = os.path.join(dirname, r'ui\offtime-bg-b2ZmdGltZS1iZw.exe')
-            icon = os.path.join(dirname, r'ui\offtime-bg-b2ZmdGltZS1iZw.exe')
+            target = os.path.join(dirname, r'offtimeSvc.exe')
+            icon = os.path.join(dirname, r'offtimeSvc.exe')
             shell = win32com.client.Dispatch("WScript.Shell")
             shortcut = shell.CreateShortCut(path)
             shortcut.Targetpath = target
@@ -285,7 +286,7 @@ class AdvancedSettings(QDialog, advancedSettingsUI):
     def startupDisableButtonClicked(self):
         try:
             os.remove(os.path.join(os.getenv('APPDATA'),
-                                   r"Microsoft\Windows\Start Menu\Programs\Startup\offtime-bg-b2ZmdGltZS1iZw.exe.lnk"))
+                                   r"Microsoft\Windows\Start Menu\Programs\Startup\offtimeSvc.exe.lnk"))
         except:
             self.statusDisplay.setText("시작프로그램에 등록되지 않은 상태입니다.")
         else:
