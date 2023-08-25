@@ -16,7 +16,33 @@
 - :clock3: 종료하기 몇 분 전부터 종료 예약 알림창을 띄울지 설정 가능합니다.
 - :negative_squared_cross_mark:	관공서의 민원인용PC 등 특정 PC에선 사용자가 종료 예약을 취소시키지 못하게끔 설정할 수 있습니다.
 - :arrows_counterclockwise: 프로그램을 시작프로그램에 등록할 수 있어 별도의 실행 없이 동작하게 할 수 있습니다.
-- :blush: 광고나 업데이트 등의 알림을 일체 띄우지 않으며 업데이트를 강제하지 않습니다.
+- :blush: 광고나 업데이트 등의 알림을 일체 띄우지 않으며 업데이트를 강제하지 않습니다.#
+
+#### :zap: 미리보기
+<p align="center">
+메인 GUI
+  <br>
+  <img src="offTIME/icon/offtime_main.png" width="30%"/>
+  <br>
+</p>
+<p align="center">
+관리자 설정 화면
+  <br>
+  <img src="offTIME/icon/offtime_pref.png" width="30%"/>
+  <br>
+</p>
+<p align="center">
+종료 안내 창: 취소 가능
+  <br>
+  <img src="offTIME/icon/offtime_notlocked.png" width="30%"/>
+  <br>
+</p>
+<p align="center">
+종료 안내 창: 취소 불가 (민원인용PC 등에 사용)
+  <br>
+  <img src="offTIME/icon/offtime_locked.png" width="30%"/>
+  <br>
+</p>
 
 #
 #### :page_with_curl: 사용 원칙 (라이센스)
