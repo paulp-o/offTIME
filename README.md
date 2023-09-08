@@ -7,7 +7,7 @@
 ###### 광고, 업데이트, 라이센스 등의 문제가 전혀 없는, 관공서 사용에 특화된 오픈 소스 PC 예약 종료 프로그램입니다. 
 
 
-| 다운로드 / 소스 코드 | [:octocat: GitHub](https://github.com/flickout/offTIME/releases) |
+| 다운로드 / 소스 코드 | [:octocat: GitHub](https://github.com/paulp-o/offTIME/releases) |
 | :--: | -- |
 #
 
@@ -57,22 +57,16 @@
 - [BeautifulSoup](https://github.com/waylan/beautifulsoup) - [MIT License](https://www.mit.edu/~amini/LICENSE.md)
 
 #
-#### :cd: 빌드 방법
-소스 코드를 이용하여 프로그램을 빌드할 때 다음 과정을 거치게 됩니다.
-- 먼저 최상위 폴더에서 pyInstaller로 _/ui/bg.py_ 를 빌드합니다.
+#### :cd: build
+- [1] build _/ui/bg.py_ with pyInstaller
 
-```PowerShell
-pyinstaller --onefile --noconsole --clean --name offtime-bg-b2ZmdGltZS1iZw.exe --distpath ./ui --icon=./icon/iconSmall.ico ./ui/bg.py
-```
-또는 (간략화)
 ```PowerShell
 pyinstaller -F -w --clean -n offtime-bg-b2ZmdGltZS1iZw.exe --distpath ./ui -i=./icon/iconSmall.ico ./ui/bg.py
 ```
 
-- _offtime-bg-b2ZmdGltZS1iZw.exe_ 이 _ui_ 폴더 안에 빌드됩니다. 이 파일은 _main.py_ 를 빌드할 때 포함되므로 먼저 빌드되어야 합니다.
-- 같은 디렉터리에서 pyInstaller을 통해 main.py를 빌드하면 됩니다.
+- [2] build _main.py_
 
-> ##### PyInstaller 빌드 참고 사항 ( _.spec_ ):
+- _.spec_ :
 > #####
 > in **Analysis**:
 > #####
