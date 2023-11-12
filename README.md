@@ -21,7 +21,7 @@
 
 #### :zap: 미리보기
 <p align="center">
-메인 GUI
+메인 화면
   <br>
   <img src="offTIME/icon/offtime_main.png" width="30%"/>
   <br>
